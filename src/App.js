@@ -2,16 +2,19 @@ import { useState } from 'react';
 
 const transactions = [
   {
+    type: 'send',
     number: 118836,
     name: 'Clark',
     amount: 500,
   },
   {
+    type: 'received',
     number: 933372,
     name: 'Sarah',
     amount: 200,
   },
   {
+    type: 'send',
     number: 499476,
     name: 'Anthony',
     amount: 800,
@@ -24,9 +27,20 @@ function Button({ children }) {
 
 export default function App() {
   const [transactionList, setTransactionList] = useState(transactions);
+  const [balance, setBalance] = useState(1000);
+  const [amount, setAmount] = useState('');
+  const [selected, setSelected] = useState('send');
 
   function handleNewTransaction(transaction) {
     setTransactionList((transactionList) => [...transactionList, transaction]);
+
+    console.log(transactionList);
+  }
+
+  function handleBalance(value) {
+    selected === 'send'
+      ? setBalance((balance) => Number(balance - value))
+      : setBalance((balance) => Number(balance + value));
   }
 
   return (
@@ -39,7 +53,11 @@ export default function App() {
         alignContent: 'center',
       }}
     >
-      <Dashboard />
+      <Dashboard
+        balance={balance}
+        onAmount={amount}
+        onHandleBalance={handleBalance}
+      />
       <Header />
       <div
         style={{
@@ -49,15 +67,26 @@ export default function App() {
           gap: '2rem',
         }}
       >
-        <SendForm onNewTransaction={handleNewTransaction} />
-        <Statement onTransactionList={transactionList} />
+        <SendForm
+          onNewTransaction={handleNewTransaction}
+          onAmount={amount}
+          onSetAmount={setAmount}
+          onHandleBalance={handleBalance}
+          onSelected={selected}
+          onSetSelected={setSelected}
+        />
+        <Statement
+          onTransactionList={transactionList}
+          onAmount={amount}
+          onSelected={selected}
+          onSetSelected={setSelected}
+        />
       </div>
     </div>
   );
 }
 
-function Dashboard() {
-  const [balance, setBalance] = useState(1000);
+function Dashboard({ balance, onAmount, onHandleBalance }) {
   return (
     <div>
       <div>Hello Praises 🙂</div>
@@ -83,29 +112,37 @@ function Header() {
   );
 }
 
-function SendForm({ onNewTransaction }) {
-  const [selected, setSelected] = useState('send');
+function SendForm({
+  onNewTransaction,
+  onAmount,
+  onSetAmount,
+  onHandleBalance,
+  onSelected,
+  onSetSelected,
+}) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
-  const [amount, setAmount] = useState('');
 
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!name || !number || !amount) return;
+    if (!name || !number || !onAmount) return;
 
     const newTransaction = {
       name,
       number,
-      amount,
+      onAmount,
+      type: onSelected,
     };
+    console.log(newTransaction);
 
     onNewTransaction(newTransaction);
+    onHandleBalance(newTransaction.onAmount);
 
-    setSelected('');
+    onSetSelected('send');
     setName('');
     setNumber('');
-    setAmount('');
+    onSetAmount('');
   }
 
   return (
@@ -119,7 +156,10 @@ function SendForm({ onNewTransaction }) {
         padding: '2rem',
       }}
     >
-      <select value={selected} onChange={(e) => setSelected(e.target.value)}>
+      <select
+        value={onSelected}
+        onChange={(e) => onSetSelected(e.target.value)}
+      >
         <option value={'send'}>Send</option>
         <option value={'receive'}>Receive</option>
       </select>
@@ -127,7 +167,7 @@ function SendForm({ onNewTransaction }) {
       <p>Carrying out XXX transaction</p>
 
       <p>
-        Account Name{' '}
+        Account Name
         <input
           type="text"
           placeholder="Account name"
@@ -137,7 +177,7 @@ function SendForm({ onNewTransaction }) {
       </p>
 
       <p>
-        Account Number{' '}
+        Account Number
         <input
           type="text"
           placeholder="Account number"
@@ -147,20 +187,21 @@ function SendForm({ onNewTransaction }) {
       </p>
 
       <p>
-        Amount{' '}
+        Amount
         <input
           type="text"
           placeholder="Amount"
-          value={amount}
-          onChange={(e) => setAmount(Number(e.target.value))}
+          value={onAmount}
+          onChange={(e) => onSetAmount(Number(e.target.value))}
         ></input>
       </p>
-      <Button>Send or Receive</Button>
+
+      <Button>{onSelected === 'send' ? 'Send' : 'Receive'}</Button>
     </form>
   );
 }
 
-function Statement({ onTransactionList }) {
+function Statement({ onTransactionList, onAmount, onSelected, onSetSelected }) {
   return (
     <div
       style={{
@@ -173,18 +214,31 @@ function Statement({ onTransactionList }) {
       }}
     >
       {onTransactionList.map((transaction) => (
-        <Transaction transaction={transaction} key={transaction.number} />
+        <Transaction
+          onAmount={onAmount}
+          transaction={transaction}
+          key={transaction.number}
+          onSelected={onSelected}
+        />
       ))}
     </div>
   );
 }
 
-function Transaction({ transaction }) {
+function Transaction({ transaction, onSelected }) {
   return (
     <li>
-      <h3>
-        You sent {transaction.name} a total of ${transaction.amount}
-      </h3>
+      {transaction.type === 'send' ? (
+        <h3>
+          💔 You sent {transaction.name} a total of $
+          {transaction.amount || transaction.onAmount}
+        </h3>
+      ) : (
+        <h3>
+          💚 You received a total of $
+          {transaction.amount || transaction.onAmount} from {transaction.name}
+        </h3>
+      )}
     </li>
   );
 }
