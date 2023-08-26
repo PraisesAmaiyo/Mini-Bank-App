@@ -2,86 +2,126 @@ import { useState } from 'react';
 
 const transactions = [
   {
-    type: 'send',
-    number: 118836,
-    name: 'Clark',
-    amount: 500,
-  },
-  {
     type: 'received',
     number: 933372,
     name: 'Sarah',
-    amount: 200,
+    amount: 1500,
+  },
+  {
+    type: 'send',
+    number: 118836,
+    name: 'Clark',
+    amount: 300,
   },
   {
     type: 'send',
     number: 499476,
     name: 'Anthony',
-    amount: 800,
+    amount: 200,
   },
 ];
 
-function Button({ children }) {
-  return <button>{children}</button>;
+function Button({ children, onClick, disabled }) {
+  return (
+    <button
+      className={`action-button ${disabled ? 'disabled-button' : ''}`}
+      onClick={onClick}
+      disabled={disabled}
+    >
+      {children}
+    </button>
+  );
+}
+
+function TransactionBtn({ children, onClick }) {
+  return (
+    <button className="transaction-button" onClick={onClick}>
+      {children}
+    </button>
+  );
 }
 
 export default function App() {
   const [transactionList, setTransactionList] = useState(transactions);
   const [balance, setBalance] = useState(1000);
   const [amount, setAmount] = useState('');
-  const [selected, setSelected] = useState('send');
+  const [selected, setSelected] = useState('receive');
+  const [showForm, setShowForm] = useState(true);
+  const [fullStatement, setFullStatement] = useState(false);
 
   function handleNewTransaction(transaction) {
     setTransactionList((transactionList) => [...transactionList, transaction]);
-
-    console.log(transactionList);
   }
 
+  // function handleBalance(value) {
+  //   if (balance <= 0) {
+  //     return;
+  //   }
+
+  //   selected === 'send'
+  //     ? setBalance((balance) => Number(balance - value))
+  //     : setBalance((balance) => Number(balance + value));
+  // }
+
   function handleBalance(value) {
-    selected === 'send'
-      ? setBalance((balance) => Number(balance - value))
-      : setBalance((balance) => Number(balance + value));
+    if (balance <= 0) {
+      return;
+    }
+
+    if (selected === 'send') {
+      const newBalance = balance - value;
+      if (newBalance >= 0) {
+        setBalance(newBalance);
+      }
+    } else {
+      setBalance(balance + value);
+    }
   }
 
   return (
-    <div
-      style={{
-        margin: '5rem auto',
-        textAlign: 'center',
-        display: 'grid',
-        justifyContent: 'center',
-        alignContent: 'center',
-      }}
-    >
+    <div className="app">
       <Dashboard
         balance={balance}
         onAmount={amount}
         onHandleBalance={handleBalance}
       />
-      <Header />
-      <div
-        style={{
-          display: 'grid',
-          gridTemplateColumns: 'repeat(2, 1fr',
-          gridTemplateRows: '1fr',
-          gap: '2rem',
-        }}
-      >
-        <SendForm
-          onNewTransaction={handleNewTransaction}
-          onAmount={amount}
-          onSetAmount={setAmount}
-          onHandleBalance={handleBalance}
-          onSelected={selected}
-          onSetSelected={setSelected}
-        />
-        <Statement
+      <Header
+        onSetShowForm={setShowForm}
+        onSetFullStatement={setFullStatement}
+        onSetSelected={setSelected}
+        onSelected={selected}
+      />
+      <div className="info">
+        {showForm && (
+          <SendForm
+            onNewTransaction={handleNewTransaction}
+            onAmount={amount}
+            onSetAmount={setAmount}
+            onHandleBalance={handleBalance}
+            onSelected={selected}
+            onSetSelected={setSelected}
+            balance={balance}
+          />
+        )}
+
+        {showForm && (
+          <Statement
+            onTransactionList={transactionList}
+            onAmount={amount}
+            onSelected={selected}
+            onSetSelected={setSelected}
+          />
+        )}
+      </div>
+
+      {fullStatement && (
+        <FullStatement
           onTransactionList={transactionList}
           onAmount={amount}
           onSelected={selected}
           onSetSelected={setSelected}
         />
-      </div>
+      )}
     </div>
   );
 }
@@ -89,25 +129,53 @@ export default function App() {
 function Dashboard({ balance, onAmount, onHandleBalance }) {
   return (
     <div>
-      <div>Hello Praises 🙂</div>
-      <div>Your balance is ${balance}</div>
+      <h1 className="header">Hello Praises 🙂</h1>
+      <p className="sub-header">Your balance is ${balance}</p>
     </div>
   );
 }
 
-function Header() {
+function Header({
+  onSetShowForm,
+  onSelected,
+  onSetSelected,
+  onSetFullStatement,
+}) {
+  const [sendEnabled, setSendEnabled] = useState(true);
+  const [receiveEnabled, setReceiveEnabled] = useState(true);
+
+  function handleSend() {
+    // onSetShowForm((show) => !show);
+    onSetSelected('send');
+    setSendEnabled(false);
+    setReceiveEnabled(true);
+    // onSetFullStatement((show) => !show);
+  }
+
+  function handleReceive() {
+    // onSetShowForm((show) => !show);
+    onSetSelected('receive');
+    setReceiveEnabled(false);
+    setSendEnabled(true);
+    // onSetFullStatement((show) => !show);
+  }
+  function handleStatement() {
+    onSetShowForm((show) => !show);
+    onSetFullStatement((show) => !show);
+    onSetSelected('send');
+  }
+
   return (
-    <div
-      style={{
-        margin: '3rem',
-        display: 'flex',
-        justifyContent: 'space-between',
-        // textAlign: 'center',
-      }}
-    >
-      <Button>📤👆Send</Button>
-      <Button>📤👇Receive</Button>
-      <Button>📜🤑Statement</Button>
+    <div className="buttons">
+      <Button onClick={handleSend} disabled={!sendEnabled}>
+        📤👆Send
+      </Button>
+
+      <Button onClick={handleReceive} disabled={!receiveEnabled}>
+        📤👇Receive
+      </Button>
+
+      <Button onClick={handleStatement}>📜🤑Statement</Button>
     </div>
   );
 }
@@ -119,6 +187,7 @@ function SendForm({
   onHandleBalance,
   onSelected,
   onSetSelected,
+  balance,
 }) {
   const [name, setName] = useState('');
   const [number, setNumber] = useState('');
@@ -126,7 +195,7 @@ function SendForm({
   function handleSubmit(e) {
     e.preventDefault();
 
-    if (!name || !number || !onAmount) return;
+    // if (!name || !number || !onAmount) return;
 
     const newTransaction = {
       name,
@@ -134,7 +203,6 @@ function SendForm({
       onAmount,
       type: onSelected,
     };
-    console.log(newTransaction);
 
     onNewTransaction(newTransaction);
     onHandleBalance(newTransaction.onAmount);
@@ -146,73 +214,86 @@ function SendForm({
   }
 
   return (
-    <form
-      onSubmit={handleSubmit}
-      style={{
-        width: '20rem',
-        height: '15rem',
-        border: '3px solid blue',
-        textAlign: 'center',
-        padding: '2rem',
-      }}
-    >
+    <form onSubmit={handleSubmit} className="card">
+      <h2> {onSelected === 'send' ? 'Debit' : 'Credit'} Transaction</h2>
       <select
         value={onSelected}
         onChange={(e) => onSetSelected(e.target.value)}
+        disabled
+        className="transaction-select"
       >
-        <option value={'send'}>Send</option>
-        <option value={'receive'}>Receive</option>
+        <option value={'send'}>SENDING</option>
+        <option value={'receive'}>RECEIVING</option>
       </select>
 
-      <p>Carrying out XXX transaction</p>
+      <p>
+        You are carrying out {onSelected === 'send' ? 'Debit' : 'Credit'}{' '}
+        transaction
+      </p>
 
       <p>
         Account Name
         <input
+          className="input-field"
           type="text"
           placeholder="Account name"
           value={name}
           onChange={(e) => setName(e.target.value)}
-        ></input>
+        />
       </p>
 
       <p>
         Account Number
         <input
+          className="input-field"
           type="text"
           placeholder="Account number"
           value={number}
           onChange={(e) => setNumber(e.target.value)}
-        ></input>
+        />
       </p>
 
       <p>
         Amount
         <input
+          className="input-field"
           type="text"
           placeholder="Amount"
           value={onAmount}
           onChange={(e) => onSetAmount(Number(e.target.value))}
-        ></input>
+        />
       </p>
 
-      <Button>{onSelected === 'send' ? 'Send' : 'Receive'}</Button>
+      <TransactionBtn className="transaction-button">
+        {onSelected === 'send' ? 'Send' : 'Receive'}
+      </TransactionBtn>
     </form>
   );
 }
 
 function Statement({ onTransactionList, onAmount, onSelected, onSetSelected }) {
   return (
-    <div
-      style={{
-        listStyle: 'none',
-        width: '20rem',
-        height: '15rem',
-        border: '3px solid green',
-        textAlign: 'center',
-        padding: '2rem',
-      }}
-    >
+    <div className="scrollable-card">
+      {onTransactionList.map((transaction) => (
+        <Transaction
+          onAmount={onAmount}
+          transaction={transaction}
+          key={transaction.number}
+          onSelected={onSelected}
+        />
+      ))}
+    </div>
+  );
+}
+
+function FullStatement({
+  onTransactionList,
+  onAmount,
+  onSelected,
+  onSetSelected,
+}) {
+  return (
+    <div className="scrollable-card full-scrollable-card">
       {onTransactionList.map((transaction) => (
         <Transaction
           onAmount={onAmount}
