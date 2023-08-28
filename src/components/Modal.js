@@ -77,8 +77,8 @@ export default function Modal({
           <div className="confirm-modal">
             <div className="icon">🤔</div>
             <p>
-              There is an account with the Account Number {number}. Do you still
-              want to proceed?
+              There is an account with the Account Number {number}. <br /> Do
+              you still want to proceed?
             </p>
             <div className="buttons">
               <Button onClick={handleCancel}>Cancel</Button>

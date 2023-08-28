@@ -1,27 +1,50 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
 
-.app {
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html {
+  font-size: 62.5%;
+}
+
+body {
+  font-size: 1.5rem;
   font-family: 'Montserrat', sans-serif;
   font-weight: 500;
-  text-align: center;
-  padding: 20px;
+}
+
+.app {
+  padding: 2.5rem;
 }
 
 .header {
   background-color: #3498db;
   color: #fff;
-  padding: 10px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  padding: 1.1rem;
+  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .sub-header {
-  margin: 10px 0 20px 0;
+  font-size: 2rem;
+  margin: 1rem 0 2rem 0;
+  text-align: center;
+}
+
+.mini-header {
+  font-size: 1.5rem;
+  margin: 1rem 0 2rem 0;
+  text-align: center;
 }
 
 .buttons {
   display: flex;
   justify-content: center;
-  gap: 10px;
+  align-items: center;
+  gap: 1.2rem;
 }
 
 .action-button {
@@ -30,7 +53,7 @@
   border: none;
   padding: 10px 20px;
   cursor: pointer;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  box-shadow: 0 0.2rem 0.4rem rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s, transform 0.2s;
 }
 
@@ -55,24 +78,26 @@
 
 .card {
   border: 1px solid #ccc;
-  padding: 20px;
-  margin-top: 20px;
+  padding: 2rem;
+  margin-top: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 .credit {
   color: #27ae60;
+  text-align: center;
 }
 
 .debit {
   color: #f92f60;
+  text-align: center;
 }
 
 .transaction-select,
 .input-field {
-  width: 95%;
-  padding: 10px;
-  margin: 10px 0;
+  width: 100%;
+  padding: 1rem;
+  margin: 1rem 0;
   border: 1px solid #ccc;
   border-radius: 4px;
 }
@@ -81,7 +106,7 @@
   background-color: #3498db;
   color: #fff;
   border: none;
-  padding: 10px 20px;
+  padding: 1rem 2rem;
   cursor: pointer;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
   transition: background-color 0.3s, transform 0.2s;
@@ -93,21 +118,25 @@
 }
 
 .transaction-list {
-  margin-top: 20px;
+  margin-top: 2rem;
+}
+.list {
+  font-size: 1.2rem;
+  margin-bottom: 5px;
 }
 
 .scrollable-card {
-  max-height: 400px;
+  max-height: 40rem;
   overflow-y: scroll;
   border: 1px solid #ccc;
-  padding: 20px;
-  margin-top: 20px;
+  padding: 2rem;
+  margin-top: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   list-style: none;
 }
 
 .icon {
-  font-size: 30px;
+  font-size: 3rem;
 }
 
 /* Styling for the overlay */
@@ -126,7 +155,7 @@
 }
 
 .overlay.active {
-  backdrop-filter: blur(3px); /* Apply the blur effect */
+  backdrop-filter: blur(4px); /* Apply the blur effect */
   pointer-events: auto; /* Enable clicks on the overlay */
   display: block;
 }
@@ -148,14 +177,17 @@
 .success-modal,
 .confirm-modal {
   background-color: #f9f9f9;
-  padding: 20px;
+  padding: 2rem;
   border-radius: 8px;
-  width: 30%;
-  height: 15%;
+  width: max-content;
+  height: max-content;
+  /* height: 40%; */
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
+  text-align: center;
+  gap: 2rem;
   z-index: 10000;
 }
 
@@ -165,5 +197,8 @@
     grid-template-rows: repeat(2, 1fr);
     grid-template-columns: 1fr;
     gap: 2rem;
+  }
+  .confirm-modal {
+    width: 90%;
   }
 }

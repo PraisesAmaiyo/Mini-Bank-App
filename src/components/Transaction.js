@@ -1,6 +1,6 @@
 export default function Transaction({ transaction }) {
   return (
-    <li>
+    <li className="list">
       {transaction.type === 'send' ? (
         <h3>
           ➖ You sent {transaction.name} a total of $
