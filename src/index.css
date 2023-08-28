@@ -30,7 +30,7 @@ body {
 
 .sub-header {
   font-size: 2rem;
-  margin: 1rem 0 2rem 0;
+  margin: 2rem 0 4rem 0;
   text-align: center;
 }
 
@@ -81,6 +81,7 @@ body {
   padding: 2rem;
   margin-top: 2rem;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
 }
 
 .credit {
@@ -102,7 +103,12 @@ body {
   border-radius: 4px;
 }
 
+.form-item {
+  text-align: left;
+}
+
 .transaction-button {
+  text-align: center;
   background-color: #3498db;
   color: #fff;
   border: none;
@@ -120,8 +126,9 @@ body {
 .transaction-list {
   margin-top: 2rem;
 }
+
 .list {
-  font-size: 1.2rem;
+  font-size: 1rem;
   margin-bottom: 5px;
 }
 
@@ -200,5 +207,10 @@ body {
   }
   .confirm-modal {
     width: 90%;
+  }
+  .mini-header {
+    font-size: 1.2rem;
+    margin: 1rem 0 2rem 0;
+    text-align: center;
   }
 }

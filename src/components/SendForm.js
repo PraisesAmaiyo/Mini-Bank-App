@@ -92,7 +92,7 @@ export default function SendForm({
           <option value={'insufficient'}>Insufficient</option>
         </select>
 
-        <p>
+        <p className="form-item">
           Account Name
           <input
             className="input-field"
@@ -103,7 +103,7 @@ export default function SendForm({
           />
         </p>
 
-        <p>
+        <p className="form-item">
           Account Number
           <input
             className="input-field"
@@ -114,7 +114,7 @@ export default function SendForm({
           />
         </p>
 
-        <p>
+        <p className="form-item">
           Amount
           <input
             className="input-field"
