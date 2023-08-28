@@ -1,7 +1,8 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500&display=swap');
 
 .app {
   font-family: 'Montserrat', sans-serif;
+  font-weight: 500;
   text-align: center;
   padding: 20px;
 }
@@ -49,6 +50,7 @@
   grid-template-columns: repeat(2, 1fr);
   grid-template-rows: 1fr;
   gap: 2rem;
+  position: relative;
 }
 
 .card {
@@ -56,6 +58,14 @@
   padding: 20px;
   margin-top: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.credit {
+  color: #27ae60;
+}
+
+.debit {
+  color: #f92f60;
 }
 
 .transaction-select,
@@ -94,4 +104,66 @@
   margin-top: 20px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   list-style: none;
+}
+
+.icon {
+  font-size: 30px;
+}
+
+/* Styling for the overlay */
+.overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  display: none;
+}
+
+.overlay.active {
+  backdrop-filter: blur(3px); /* Apply the blur effect */
+  pointer-events: auto; /* Enable clicks on the overlay */
+  display: block;
+}
+
+/* Styling for the Success modal */
+.success-overlay,
+.confirm-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1000; /* Ensure it's above other content */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.success-modal,
+.confirm-modal {
+  background-color: #f9f9f9;
+  padding: 20px;
+  border-radius: 8px;
+  width: 30%;
+  height: 15%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  z-index: 10000;
+}
+
+/* Media query for mobile devices  */
+@media (max-width: 768px) {
+  .info {
+    grid-template-rows: repeat(2, 1fr);
+    grid-template-columns: 1fr;
+    gap: 2rem;
+  }
 }
