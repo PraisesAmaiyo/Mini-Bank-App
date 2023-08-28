@@ -1,6 +1,6 @@
 # React Mini Bank App
 
-Welcome to the React Mini Bank Appt! 🎉 This is a lighthearted and playful project where we explore the banking system where you can send and receive money, and also see an account statement of your transactions
+Welcome to the React Mini Bank Appt! 🎉 This is a lighthearted and playful project where we explore the banking system where you can send and receive money, and also see an account statement of your transactions.
 
 ## Table of Contents
 
